@@ -32,8 +32,8 @@
           </div>
         </div>
         <div class="card-footer">
-          <button class="connect-button" @click="disconnect(connection.id)">
-            <span>{{ connection.connected ? 'Connected' : 'Connect' }}</span>
+          <button class="connect-button" @click="toggleConnection(connection.id)">
+            <span>{{ connection.connected ? 'Disconnect' : 'Connect' }}</span>
           </button>
           <button class="message-button">
             <i class="fas fa-envelope"></i>
@@ -44,8 +44,22 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+interface Connection {
+  id: number
+  name: string
+  role: string
+  skills: string[]
+  projects: number
+  tasks: number
+  connections: number
+  connected: boolean
+  image: string
+}
+
+export default defineComponent({
   data() {
     return {
       searchQuery: '',
@@ -82,41 +96,71 @@ export default {
           connections: 890,
           connected: false,
           image: 'https://via.placeholder.com/100x100'
+        },
+        {
+          id: 4,
+          name: 'Luis Gilbert',
+          role: 'UI Designer',
+          skills: ['Figma', 'Sketch'],
+          projects: 18,
+          tasks: 834,
+          connections: 229,
+          connected: true,
+          image: 'https://via.placeholder.com/100x100'
+        },
+        {
+          id: 5,
+          name: 'Carlos Cuesta',
+          role: 'Developer',
+          skills: ['Angular', 'React'],
+          projects: 112,
+          tasks: 2310,
+          connections: 1180,
+          connected: true,
+          image: 'https://via.placeholder.com/100x100'
+        },
+        {
+          id: 6,
+          name: 'Josney Castillo',
+          role: 'Developer',
+          skills: ['HTML', 'React'],
+          projects: 32,
+          tasks: 1250,
+          connections: 990,
+          connected: false,
+          image: 'https://via.placeholder.com/200x200'
         }
-        // Add more connection objects as needed
-      ]
+      ] as Connection[]
     }
   },
   computed: {
-    filteredConnections() {
+    filteredConnections(): Connection[] {
       return this.connections.filter((connection) =>
         connection.name.toLowerCase().includes(this.searchQuery.toLowerCase())
       )
     }
   },
   methods: {
-    disconnect(id) {
+    toggleConnection(id: number): void {
       this.connections = this.connections.map((connection) =>
-        connection.id === id ? { ...connection, connected: false } : connection
+        connection.id === id ? { ...connection, connected: !connection.connected } : connection
       )
     }
   }
-}
+})
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .connections {
   padding: 2rem;
   background-color: #f8f9fa;
   border-radius: 12px;
-
   h2 {
     font-size: 1.5rem;
     margin-bottom: 1.5rem;
     color: #343a40;
     font-family: 'Poppins', sans-serif;
   }
-
   input[type='text'] {
     width: 100%;
     padding: 0.75rem;
@@ -126,13 +170,11 @@ export default {
     font-size: 1rem;
     font-family: 'Poppins', sans-serif;
   }
-
   .connections-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
   }
-
   .connection-card {
     background-color: #ffffff;
     border-radius: 12px;
@@ -141,38 +183,36 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-
+    transition: transform 0.2s ease-in-out;
+    &:hover {
+      transform: scale(1.05);
+    }
     .card-header {
       display: flex;
       align-items: center;
       margin-bottom: 1.5rem;
-
       .profile-pic {
         width: 50px;
         height: 50px;
         border-radius: 50%;
         margin-right: 1rem;
       }
-
       .profile-info {
         flex-grow: 1;
-
         .name {
           font-size: 1.1rem;
           color: #343a40;
           margin: 0;
         }
-
         .role {
           font-size: 0.9rem;
           color: #6c757d;
           margin: 0.25rem 0;
         }
-
         .skills {
           display: flex;
           gap: 0.5rem;
-
+          flex-wrap: wrap;
           .skill {
             background-color: #e9ecef;
             color: #495057;
@@ -182,30 +222,28 @@ export default {
           }
         }
       }
-
       .more-options {
         background: none;
         border: none;
         font-size: 1.5rem;
         color: #6c757d;
         cursor: pointer;
+        &:hover {
+          color: #343a40;
+        }
       }
     }
-
     .card-body {
       .stats {
         display: flex;
         justify-content: space-between;
-
         div {
           text-align: center;
-
           .stat-number {
             font-size: 1.3rem;
             color: #343a40;
             margin: 0;
           }
-
           .stat-label {
             font-size: 0.8rem;
             color: #6c757d;
@@ -213,13 +251,11 @@ export default {
         }
       }
     }
-
     .card-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-top: 1rem;
-
       .connect-button {
         background-color: #007bff;
         color: #ffffff;
@@ -229,12 +265,11 @@ export default {
         cursor: pointer;
         font-size: 0.9rem;
         font-family: 'Poppins', sans-serif;
-
+        transition: background-color 0.2s ease-in-out;
         &:hover {
           background-color: #0056b3;
         }
       }
-
       .message-button {
         background-color: #f8f9fa;
         color: #007bff;
@@ -244,11 +279,10 @@ export default {
         cursor: pointer;
         font-size: 0.9rem;
         font-family: 'Poppins', sans-serif;
-
+        transition: background-color 0.2s ease-in-out;
         i {
           margin-right: 0.5rem;
         }
-
         &:hover {
           background-color: #e9ecef;
         }

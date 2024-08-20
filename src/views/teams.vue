@@ -1,156 +1,293 @@
 <template>
-  <div class="teams">
-    <h2>Teams</h2>
-    <div class="teams-grid">
-      <div class="team-card" v-for="team in teams" :key="team.id">
-        <div class="card-header">
-          <div class="team-info">
-            <img :src="team.icon" alt="team icon" class="team-icon" />
-            <h3 class="team-name">{{ team.name }}</h3>
-          </div>
-          <div class="tags">
-            <span v-for="tag in team.tags" :key="tag" class="tag">{{ tag }}</span>
-          </div>
+  <div class="teams-container">
+    <div class="team-card" v-for="(team, index) in teams" :key="index">
+      <div class="card-header">
+        <div class="group-icon">
+          <img :src="team.icon" alt="Group Icon" />
         </div>
-        <div class="card-body">
-          <p class="team-description">{{ team.description }}</p>
-          <div class="team-members">
-            <img v-for="member in team.members" :key="member.id" :src="team.members.avatar" alt="member avatar" class="member-avatar" />
-          </div>
+        <div class="group-title">{{ team.title }}</div>
+        <div class="card-actions">
+          <i
+            :class="['fa', 'fa-star', { favorite: team.isFavorite }]"
+            @click="toggleFavorite(team)"
+          ></i>
+          <i class="fa fa-ellipsis-v"></i>
+        </div>
+      </div>
+      <div class="card-description">
+        {{ team.description }}
+      </div>
+      <div class="card-footer">
+        <div class="members">
+          <img
+            v-for="(member, i) in team.members"
+            :key="i"
+            :src="member.avatar"
+            alt="Member"
+            class="member-photo"
+            :class="{ 'more-members': team.members.length > 3 && i === 2 }"
+          />
+          <span v-if="team.members.length > 3" class="more-members-indicator"
+            >+{{ team.members.length - 3 }}</span
+          >
+        </div>
+        <div class="tags">
+          <span
+            v-for="(tag, i) in team.tags"
+            :key="i"
+            class="tag"
+            :style="{ backgroundColor: tagColors[tag].background, color: tagColors[tag].color }"
+          >
+            {{ tag }}
+          </span>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      teams: [
-        {
-          id: 1,
-          name: 'React Developers',
-          icon: 'react-icon.png',
-          tags: ['React', 'MUI'],
-          description: 'We don\'t make assumptions about the rest of your technology stack, so you can develop new features in React.',
-          members: [
-            { id: 1, name: 'John Doe', avatar: '../assets/logo.svg' },
-            { id: 2, name: 'Jane Doe', avatar: '../assets/logo.svg' },
-            { id: 3, name: 'Alex Smith', avatar: '../assets/logo.svg' }
-          ]
-        },
-        {
-          id: 2,
-          name: 'Vue.js Dev Team',
-          icon: '../assets/logo.svg',
-          tags: ['Vuejs', 'Developer'],
-          description: 'The development of Vue and its ecosystem is guided by an international team, some of whom have chosen to be featured below.',
-          members: [
-            { id: 1, name: 'Anna Johnson', avatar: '../assets/logo.svg' },
-            { id: 2, name: 'Mark White', avatar: '../assets/logo.svg' }
-          ]
-        }
-      ]
-    }
+<script setup lang="ts">
+import { ref } from 'vue'
+
+interface Member {
+  avatar: string
+}
+
+interface Team {
+  icon: string
+  title: string
+  description: string
+  members: Member[]
+  tags: string[]
+  isFavorite: boolean
+}
+
+import react from '../assets/images/react.png'
+import support from '../assets/images/support.png'
+import ui from '../assets/images/ui.png'
+import vue from '../assets/images/vue.jpg'
+import hombre from '../assets/images/hombre.png'
+import mujer from '../assets/images/mujer.png'
+
+const tagColors: Record<string, { color: string; background: string }> = {
+  React: { color: '#61DAFB', background: 'rgba(97, 218, 251, 0.2)' },
+  MUI: { color: '#007FFF', background: 'rgba(0, 127, 255, 0.2)' },
+  Vuejs: { color: '#4FC08D', background: 'rgba(79, 192, 141, 0.2)' },
+  Developer: { color: '#42b883', background: 'rgba(66, 184, 131, 0.2)' },
+  Sketch: { color: '#F7B500', background: 'rgba(247, 181, 0, 0.2)' },
+  XD: { color: '#FF61F6', background: 'rgba(255, 97, 246, 0.2)' },
+  Zendesk: { color: '#FF61F6', background: 'rgba(255, 97, 246, 0.2)' },
+  Twiter: { color: '#61DAFB', background: 'rgba(97, 218, 251, 0.2)' },
+  Email: { color: '#007FFF', background: 'rgba(0, 127, 255, 0.2)' },
+  Hubilo: { color: '#4FC08D', background: 'rgba(79, 192, 141, 0.2)' },
+  Figma: { color: '#F7B500', background: 'rgba(247, 181, 0, 0.2)' },
+  HTML: { color: '#FF61F6', background: 'rgba(255, 97, 246, 0.2)' },
+  'UI/UX': { color: '#FF61F6', background: 'rgba(255, 97, 246, 0.2)' },
+  CSS: { color: '#FF61F6', background: 'rgba(255, 97, 246, 0.2)' }
+}
+
+const teams = ref<Team[]>([
+  {
+    icon: react,
+    title: 'React Developers',
+    description:
+      'We don’t make assumptions about the rest or your technology stack, so you can develop new features in React.',
+    members: [{ avatar: mujer }, { avatar: mujer }, { avatar: mujer }, { avatar: hombre }],
+    tags: ['React', 'MUI'],
+    isFavorite: false
+  },
+  {
+    icon: vue,
+    title: 'Vue.js Dev Team',
+    description:
+      'The development of Vue and its ecosystem is guided by an international team, some of whom have chosen to be featured below.',
+    members: [{ avatar: mujer }, { avatar: mujer }, { avatar: mujer }, { avatar: mujer }],
+    tags: ['Vuejs', 'Developer'],
+    isFavorite: false
+  },
+  {
+    icon: ui,
+    title: 'Creative Designers',
+    description:
+      'A design or product team is more than just the people on it. A team includes the people, the roles they play, and the collaboration they foster.',
+    members: [{ avatar: hombre }, { avatar: hombre }, { avatar: mujer }, { avatar: mujer }],
+    tags: ['Sketch', 'XD'],
+    isFavorite: false
+  },
+  {
+    icon: support,
+    title: 'Support Team',
+    description:
+      'Support yout team. Your customer support team is fielding the good, the bad, and the ugly day in and day out.',
+    members: [{ avatar: mujer }, { avatar: hombre }, { avatar: hombre }, { avatar: mujer }],
+    tags: ['Zendesk'],
+    isFavorite: false
+  },
+  {
+    icon: ui,
+    title: 'Digital Marketing',
+    description:
+      'Digital marketing refers to advertising delivered through digital channels such as search engines, web sites and mobile apps.',
+    members: [{ avatar: mujer }, { avatar: mujer }, { avatar: hombre }, { avatar: hombre }],
+    tags: ['Twiter', 'Email'],
+    isFavorite: false
+  },
+  {
+    icon: ui,
+    title: 'Event',
+    description:
+      'Event is defined as a particular contest which is part of a program of contests. An example of an event is the long jump competition.',
+    members: [{ avatar: mujer }, { avatar: mujer }, { avatar: mujer }, { avatar: hombre }],
+    tags: ['Hubilo'],
+    isFavorite: false
+  },
+  {
+    icon: ui,
+    title: 'Figma Resources',
+    description:
+      'Explore, install use, and remix thousands of plugins and files published to the Figma Community by designers and developers.',
+    members: [{ avatar: mujer }, { avatar: mujer }, { avatar: mujer }, { avatar: mujer }],
+    tags: ['Figma', 'UI/UX'],
+    isFavorite: false
+  },
+  {
+    icon: ui,
+    title: 'Native Mobile App',
+    description:
+      'React Native lets you create user friendly native apps and doesn´t compromise you users´experiences. With its robust framework',
+    members: [{ avatar: mujer }, { avatar: mujer }, { avatar: mujer }, { avatar: mujer }],
+    tags: ['React'],
+    isFavorite: false
+  },
+  {
+    icon: ui,
+    title: 'Only beginners',
+    description:
+      'Learn the basics of how websites work, front-end vs back-end, and using a code editor, Learn basic HTML, CSS, and...',
+    members: [{ avatar: mujer }, { avatar: mujer }, { avatar: hombre }, { avatar: mujer }],
+    tags: ['CSS', 'HTML'],
+    isFavorite: false
   }
+])
+
+function toggleFavorite(team: Team) {
+  team.isFavorite = !team.isFavorite
 }
 </script>
 
-<style lang="scss">
-.teams {
-  padding: 2rem;
-  background-color: #f8f9fa;
+<style scoped>
+.teams-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 10px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.team-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.group-icon {
+  width: 35px;
+  height: 35px;
+  margin-inline: 10px;
+  margin-top: 10px;
+}
+
+.group-icon img {
+  width: 90%;
+  height: 90%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.group-title {
+  flex: 1;
+  color: rgb(111, 108, 108);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  color: #666;
+  margin-top: 10px;
+}
+
+.card-actions i {
+  margin-left: 15px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.card-actions .fa-star {
+  color: #ddd;
+}
+
+.card-actions .fa-star.favorite {
+  color: #ffb400;
+}
+
+.card-description {
+  padding: 10px;
+  font-size: 14px;
+  color: #555;
+}
+
+.card-footer {
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.members {
+  display: flex;
+}
+
+.member-photo {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: -8px;
+  border: 2px solid #fff;
+  object-fit: cover;
+  z-index: 2;
+}
+
+.more-members-indicator {
+  margin-left: 10px;
+  font-size: 12px;
+  color: #666;
+}
+
+.tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 10px;
+  padding: 2px 8px;
   border-radius: 12px;
-
-  h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-    color: #343a40;
-    font-family: 'Poppins', sans-serif;
-  }
-
-  .teams-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-  }
-
-  .team-card {
-    background-color: #ffffff;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease-in-out;
-
-    &:hover {
-      transform: translateY(-5px);
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-
-      .team-info {
-        display: flex;
-        align-items: center;
-
-        .team-icon {
-          width: 24px;
-          height: 24px;
-          margin-right: 0.5rem;
-        }
-
-        .team-name {
-          font-size: 1.2rem;
-          color: #343a40;
-          margin: 0;
-          font-family: 'Poppins', sans-serif;
-        }
-      }
-
-      .tags {
-        .tag {
-          background-color: #e9ecef;
-          color: #007bff;
-          border-radius: 20px;
-          padding: 0.2rem 0.5rem;
-          font-size: 0.75rem;
-          margin-left: 0.5rem;
-          font-family: 'Poppins', sans-serif;
-
-          &:first-child {
-            margin-left: 0;
-          }
-        }
-      }
-    }
-
-    .card-body {
-      .team-description {
-        font-size: 0.9rem;
-        color: #6c757d;
-        margin-bottom: 1rem;
-        font-family: 'Poppins', sans-serif;
-      }
-
-      .team-members {
-        display: flex;
-
-        .member-avatar {
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          margin-right: 0.5rem;
-
-          &:last-child {
-            margin-right: 0;
-          }
-        }
-      }
-    }
-  }
+  text-transform: capitalize;
 }
 </style>

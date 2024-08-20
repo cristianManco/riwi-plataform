@@ -1,71 +1,32 @@
+@import '../base/mixins';
+
 $primary-color: #3498db; // Azul
 $secondary-color: #e91e63; // Rosado
 $accent-color: #8e44ad; // Morado
-$background-color: #ffffff; // Blanco
+$background-color: #100404; // Blanco
 $text-color: black; // Negro
 
 // Variables de fuente
 $font-family: 'Roboto', sans-serif;
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  font-family: $font-family;
+  background-color: $background-color;
+  color: $text-color;
+}
 // Mixins
 @mixin flex-center {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-
-@mixin box-shadow {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-// Estilos globales
-body {
-  font-family: $font-family;
-  background-color: $background-color;
-  color: $text-color;
-  margin: 0;
-  padding: 0;
-  line-height: 1.6;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-// Estilos de las tarjetas
-.card {
-  background-color: $background-color;
-  border-radius: 8px;
-  overflow: hidden;
-  @include box-shadow;
-  transition: transform 0.2s ease-in-out;
-
-  &:hover {
-    transform: translateY(-5px);
-  }
-
-  .card-header {
-    background-color: $primary-color;
-    color: $background-color;
-    padding: 20px;
-    font-size: 1.5rem;
-  }
-
-  .card-content {
-    padding: 20px;
-    color: $text-color;
-  }
-
-  .card-footer {
-    background-color: $accent-color;
-    color: $background-color;
-    padding: 10px;
-    text-align: center;
-  }
-}
-
 // Botones
 .button {
   background-color: $secondary-color;
